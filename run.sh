@@ -2,7 +2,7 @@
 GITHUB_USERNAME=Jogos101
 GITHUB_EMAIL=simonlucena8@gmail.com
 
-SERVICE_NAME=payment
+SERVICE_NAME=order
 RELEASE_VERSION=v1.2.3
 
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
@@ -12,10 +12,10 @@ source ~/.bashrc
 
 echo "Generating Go source code"
 mkdir -p golang
-protoc --go_out=./golang \
-  --go_opt=paths=source_relative \
-  --go-grpc_out=./golang \
-  --go-grpc_opt=paths=source_relative \
+protoc --go_out=./golang\
+  --go_opt=paths=source_relative\
+  --go-grpc_out=./golang\
+  --go-grpc_opt=paths=source_relative\
  ./${SERVICE_NAME}/*.proto
 
 echo "Generated Go source code files"
