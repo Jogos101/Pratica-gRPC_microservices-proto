@@ -19,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Shipping_CalculateETA_FullMethodName = "/Shipping/CalculateETA"
+	Shipping_Create_FullMethodName       = "/Shipping/Create"
+	Shipping_GetByOrder_FullMethodName   = "/Shipping/GetByOrder"
+	Shipping_UpdateStatus_FullMethodName = "/Shipping/UpdateStatus"
 )
 
 // ShippingClient is the client API for Shipping service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// Serviço de cálculo de prazo de entrega
 type ShippingClient interface {
-	CalculateETA(ctx context.Context, in *ShippingRequest, opts ...grpc.CallOption) (*ShippingResponse, error)
+	Create(ctx context.Context, in *CreateShipmentRequest, opts ...grpc.CallOption) (*ShipmentResponse, error)
+	GetByOrder(ctx context.Context, in *GetByOrderRequest, opts ...grpc.CallOption) (*ShipmentResponse, error)
+	UpdateStatus(ctx context.Context, in *UpdateShipmentStatusRequest, opts ...grpc.CallOption) (*ShipmentResponse, error)
 }
 
 type shippingClient struct {
@@ -39,10 +41,30 @@ func NewShippingClient(cc grpc.ClientConnInterface) ShippingClient {
 	return &shippingClient{cc}
 }
 
-func (c *shippingClient) CalculateETA(ctx context.Context, in *ShippingRequest, opts ...grpc.CallOption) (*ShippingResponse, error) {
+func (c *shippingClient) Create(ctx context.Context, in *CreateShipmentRequest, opts ...grpc.CallOption) (*ShipmentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ShippingResponse)
-	err := c.cc.Invoke(ctx, Shipping_CalculateETA_FullMethodName, in, out, cOpts...)
+	out := new(ShipmentResponse)
+	err := c.cc.Invoke(ctx, Shipping_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shippingClient) GetByOrder(ctx context.Context, in *GetByOrderRequest, opts ...grpc.CallOption) (*ShipmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ShipmentResponse)
+	err := c.cc.Invoke(ctx, Shipping_GetByOrder_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shippingClient) UpdateStatus(ctx context.Context, in *UpdateShipmentStatusRequest, opts ...grpc.CallOption) (*ShipmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ShipmentResponse)
+	err := c.cc.Invoke(ctx, Shipping_UpdateStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,10 +74,10 @@ func (c *shippingClient) CalculateETA(ctx context.Context, in *ShippingRequest, 
 // ShippingServer is the server API for Shipping service.
 // All implementations must embed UnimplementedShippingServer
 // for forward compatibility.
-//
-// Serviço de cálculo de prazo de entrega
 type ShippingServer interface {
-	CalculateETA(context.Context, *ShippingRequest) (*ShippingResponse, error)
+	Create(context.Context, *CreateShipmentRequest) (*ShipmentResponse, error)
+	GetByOrder(context.Context, *GetByOrderRequest) (*ShipmentResponse, error)
+	UpdateStatus(context.Context, *UpdateShipmentStatusRequest) (*ShipmentResponse, error)
 	mustEmbedUnimplementedShippingServer()
 }
 
@@ -66,8 +88,14 @@ type ShippingServer interface {
 // pointer dereference when methods are called.
 type UnimplementedShippingServer struct{}
 
-func (UnimplementedShippingServer) CalculateETA(context.Context, *ShippingRequest) (*ShippingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CalculateETA not implemented")
+func (UnimplementedShippingServer) Create(context.Context, *CreateShipmentRequest) (*ShipmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedShippingServer) GetByOrder(context.Context, *GetByOrderRequest) (*ShipmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByOrder not implemented")
+}
+func (UnimplementedShippingServer) UpdateStatus(context.Context, *UpdateShipmentStatusRequest) (*ShipmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateStatus not implemented")
 }
 func (UnimplementedShippingServer) mustEmbedUnimplementedShippingServer() {}
 func (UnimplementedShippingServer) testEmbeddedByValue()                  {}
@@ -90,20 +118,56 @@ func RegisterShippingServer(s grpc.ServiceRegistrar, srv ShippingServer) {
 	s.RegisterService(&Shipping_ServiceDesc, srv)
 }
 
-func _Shipping_CalculateETA_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ShippingRequest)
+func _Shipping_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateShipmentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShippingServer).CalculateETA(ctx, in)
+		return srv.(ShippingServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shipping_CalculateETA_FullMethodName,
+		FullMethod: Shipping_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShippingServer).CalculateETA(ctx, req.(*ShippingRequest))
+		return srv.(ShippingServer).Create(ctx, req.(*CreateShipmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Shipping_GetByOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShippingServer).GetByOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shipping_GetByOrder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShippingServer).GetByOrder(ctx, req.(*GetByOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Shipping_UpdateStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateShipmentStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShippingServer).UpdateStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shipping_UpdateStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShippingServer).UpdateStatus(ctx, req.(*UpdateShipmentStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -116,8 +180,16 @@ var Shipping_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ShippingServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CalculateETA",
-			Handler:    _Shipping_CalculateETA_Handler,
+			MethodName: "Create",
+			Handler:    _Shipping_Create_Handler,
+		},
+		{
+			MethodName: "GetByOrder",
+			Handler:    _Shipping_GetByOrder_Handler,
+		},
+		{
+			MethodName: "UpdateStatus",
+			Handler:    _Shipping_UpdateStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

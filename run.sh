@@ -2,7 +2,7 @@
 GITHUB_USERNAME=Jogos101
 GITHUB_EMAIL=simonlucena8@gmail.com
 
-SERVICE_NAME=order
+SERVICE_NAME=shipping
 RELEASE_VERSION=v1.2.3
 
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest

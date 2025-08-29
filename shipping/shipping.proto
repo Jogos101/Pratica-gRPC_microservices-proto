@@ -2,24 +2,16 @@ syntax = "proto3";
 
 option go_package = "github.com/Jogos101/microservices-proto/golang/shipping";
 
-// Item a ser entregue
-message ShippingItem {
-  string product_code = 1;
-  int32  quantity     = 2;
+message CreateShippingRequest {
+    int64 user_id = 1;
+    int64 order_id = 2;
 }
 
-// Pedido de cálculo de prazo
-message ShippingRequest {
-  int64 order_id = 1;
-  repeated ShippingItem items = 2;
+message CreateShippingResponse {
+    int64 shipping_id = 1;
+    float total_prazo = 2;
 }
 
-// Resposta com o prazo em dias
-message ShippingResponse {
-  int32 eta_days = 1;
-}
-
-// Serviço de cálculo de prazo de entrega
 service Shipping {
-  rpc CalculateETA(ShippingRequest) returns (ShippingResponse);
+    rpc Create ( CreateShippingRequest ) returns ( CreateShippingResponse ) {}
 }
